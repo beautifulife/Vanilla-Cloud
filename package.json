@@ -1,0 +1,36 @@
+{
+  "name": "test-1",
+  "version": "1.0.0",
+  "description": "First test of 20 weeks long Javascript bootcamp course",
+  "author": "Ken Huh <ken@vanillacoding.co>",
+  "license": "MIT",
+  "homepage": "https://github.com/vanilla-coding/test-1",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=dev webpack-dev-server --progress --mode development --config webpack.config.dev.js"
+  },
+  "dependencies": {
+    "lodash": "4.17.11"
+  },
+  "devDependencies": {
+    "@babel/core": "7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "babel-loader": "8.0.4",
+    "babel-plugin-syntax-dynamic-import": "6.18.0",
+    "babel-preset-env": "1.7.0",
+    "clean-webpack-plugin": "0.1.19",
+    "cross-env": "5.2.0",
+    "css-loader": "1.0.0",
+    "file-loader": "2.0.0",
+    "html-webpack-plugin": "3.2.0",
+    "less": "^3.8.1",
+    "less-loader": "^4.1.0",
+    "node-sass": "4.9.3",
+    "sass-loader": "7.1.0",
+    "style-loader": "0.23.1",
+    "url-loader": "1.1.1",
+    "webpack": "4.20.2",
+    "webpack-cli": "3.1.1",
+    "webpack-dev-server": "3.1.9",
+    "webpack-merge": "4.1.4"
+  }
+}
