@@ -44,7 +44,7 @@ $ yarn dev (or npm run dev)
 
 ## 채점 기준
 
-각 10점씩이며, 총점 30점 미만은 탈락입니다.
+각 10점씩이며, 총점 30점 이상은 통과입니다.
 
 - [ ] (10) Consistent Code Style
 - [ ] (10) Code Readability
