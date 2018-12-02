@@ -27,6 +27,7 @@ header {
     align-items: baseline;
     display: flex;
     min-height: 70px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
 h1 {
@@ -43,6 +44,8 @@ h2 {
 
 .main_content {
     flex: 7;
+    min-height: 500px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
 }
@@ -67,6 +70,7 @@ h2 {
 
 .word_counter {
     flex: 1;
+    text-align: center;
 }
 
 .show_window {
@@ -75,9 +79,21 @@ h2 {
     height: 350px;
 }
 
+.show_cloud {
+
+}
+
 
 footer {
     margin-top: auto;
     flex: 1;
-    align-items: flex-end;
+    flex-shrink: 0;
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.made_by {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
