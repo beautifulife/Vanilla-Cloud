@@ -3,8 +3,81 @@
 // http://www.paulirish.com/2012/box-sizing-border-box-ftw/
 html, body {
     box-sizing: border-box;
-    background-color: pink;
+    background-color: white;
 }
 *, *:before, *:after {
     box-sizing: inherit;
+    border: 0.5px solid rgb(177, 177, 177);
+}
+
+textarea {
+    all: unset;
+}
+
+.content {
+    display: flex;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+}
+
+header {
+    flex: 1;
+    align-items: baseline;
+    display: flex;
+    min-height: 70px;
+}
+
+h1 {
+    margin-left: 20px;
+    flex: 1;
+}
+
+h2 {
+    margin-right: 20px;
+    flex: 1;
+    display:flex;
+    justify-content: flex-end;
+}
+
+.main_content {
+    flex: 7;
+    display: flex;
+    align-items: center;
+}
+
+.input_window {
+    flex: 1;
+    margin: 0 50px;
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+}
+
+.input_text {
+    flex: 9;
+    padding: 15px;
+    word-wrap: break-word;
+    resize:none;
+    font-size: 1rem;
+    position: relative;
+}
+
+.word_counter {
+    flex: 1;
+}
+
+.show_window {
+    flex: 1;
+    margin: 0 50px;
+    height: 350px;
+}
+
+
+footer {
+    margin-top: auto;
+    flex: 1;
+    align-items: flex-end;
 }
