@@ -4,24 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width">
     <title><%= htmlWebpackPlugin.options.title %></title>
+    <link href="https://fonts.googleapis.com/css?family=Indie+Flower|Lobster|Open+Sans" rel="stylesheet">
 </head>
 <body>
     <div class="content">
         <header>
-            <h1><img>Vanilla Cloud</h1>
-            <h2>Analyze your text</h2>
+            <h1><img class="img_left" src="assets/images/header_img_left.png"><span>Vanilla Cloud</span><img class="img_right" src="assets/images/header_img_right.png"></h1>
+            <h2>"Analyze your text! what do you want?</h2>
         </header>
         <div class="main_content">
             <div class="input_window">
-                <textarea class="input_text" placeholder="텍스트를 입력하세요."></textarea>
-                <div class="word_counter"></div>
+                <textarea class="input_text" placeholder="Write down your text (English Only)"></textarea>
+                <div class="word_counter">
+                    <span>type : 0</span>
+                </div>
             </div>
-            <div class="show_window">
-                <div class="show_cloud"></div>
+            <div class="show_panel">
+                <div class="control_window">
+                    <div>
+                        <label>Color</label>
+                        <select class="color-select">
+                            <option value="">Bright-default</option>
+                            <option value="">Rainbow</option>
+                            <option value="">Baby</option>
+                            <option value="">Dark</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Font</label>
+                        <select class="font-select">
+                            <option value="">Impact-default</option>
+                            <option value="">Lobster</option>
+                            <option value="">Indie Flower</option>
+                            <option value="">Open sans</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="show_window"></div>
+                <div class="description_layer">
+                    <ul>
+                        <li>Your analysis will be here!</li>
+                        <li>Type or paste the text you want to analyze</li>
+                        <li>Choose options according to your favorite style</li>
+                    </ul>
+                </div>
             </div>
         </div>
         <footer>
-            <span class="made_by">made by beautifulife</span>
+            <span class="made_by">Made By Beautifulife</span>
         </footer>
     </div>
 </body>

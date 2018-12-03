@@ -4,19 +4,26 @@
 html, body {
     box-sizing: border-box;
     background-color: white;
+    border: none;
 }
 *, *:before, *:after {
     box-sizing: inherit;
-    border: 0.5px solid rgb(177, 177, 177);
 }
 
 textarea {
     all: unset;
 }
 
+::-webkit-scrollbar {
+    width: 0px;
+    background: none;
+}
+
 .content {
     display: flex;
     position: absolute;
+    top: 0;
+    left: 0;
     height: 100%;
     width: 100%;
     flex-direction: column;
@@ -24,76 +31,210 @@ textarea {
 
 header {
     flex: 1;
-    align-items: baseline;
+    align-items: center;
     display: flex;
     min-height: 70px;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    border-bottom: 0.5px solid rgb(177, 177, 177);
+    letter-spacing: 0.5px;
+    word-spacing: 3px;
 }
 
 h1 {
-    margin-left: 20px;
+    padding-left: 40px;
     flex: 1;
+    display: flex;
+    align-content: center;
+}
+
+h1 > .img_left {
+    margin-right: 5px;
+    width: 40px;
+    height: 35px;
+}
+
+h1 > .img_right {
+    margin-left: 10px;
+    width: 40px;
+    height: 40px;
 }
 
 h2 {
-    margin-right: 20px;
     flex: 1;
-    display:flex;
-    justify-content: flex-end;
+    display: flex;
 }
 
 .main_content {
-    flex: 7;
+    flex: 14;
     min-height: 500px;
     flex-shrink: 0;
     display: flex;
-    align-items: center;
+    color: rgba(0, 0, 0, 0.6);
 }
 
 .input_window {
     flex: 1;
-    margin: 0 50px;
-    height: 350px;
+    flex-basis: 100px;
     display: flex;
     flex-direction: column;
     justify-content: start;
+    border-right: 0.5px solid rgb(177, 177, 177);
+}
+
+.overflow {
+    border: 1px solid red;
+    color: red;
 }
 
 .input_text {
-    flex: 9;
+    flex: 8;
     padding: 15px;
+    padding-bottom: 0;
     word-wrap: break-word;
     resize:none;
-    font-size: 1rem;
     position: relative;
 }
 
 .word_counter {
     flex: 1;
+    flex-basis: 15px;
     text-align: center;
+    display: flex;
+    align-items: center;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
-.show_window {
+.word_counter > span {
     flex: 1;
-    margin: 0 50px;
-    height: 350px;
 }
 
-.show_cloud {
-
+.show_panel {
+    flex: 3;
+    flex-basis: 100px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
 }
 
-
-footer {
-    margin-top: auto;
-    flex: 1;
-    flex-shrink: 0;
-    min-height: 70px;
+.control_window {
+    flex: 0 0 50px;
+    border-bottom: 0.5px solid rgb(177, 177, 177);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+.control_window > div {
+    flex: 0 0 150px;
+}
+
+.control_window > div > label{
+    font-size: 12px;
+}
+
+.show_window {
+    flex: 6;
+    overflow:scroll;
+    color: rgba(0, 0, 0, 0.6)
+}
+
+.cloud_items {
+    margin: 2px;
+    padding: 2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cloud_items > span {
+    flex: 1;
+}
+
+.description_layer {
+    position: absolute;
+    top: calc(50% - 50px);
+    left: calc(50% - 200px);
+    width: 400px;
+    height: 100px;
+    background-color: rgba(226, 224, 224, 0.5);
+    border-radius: 10px;
+    padding: 0 13px;
+    color:rgba(0, 0, 0, 0.4);
+}
+
+.description_layer > ul >li {
+    margin: 6px 0;
+}
+
+.hidden {
+    display: none;
+}
+
+footer {
+    margin-top: auto;
+    flex: 1;
+    min-height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top: 0.5px solid rgb(177, 177, 177);
+}
+
 .made_by {
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+.color_baby {
+
+}
+
+.color_ranibow {
+
+}
+
+.color_dark {
+
+}
+
+.font_lobster {
+    font-family: 'Lobster', cursive;
+}
+
+.font_open_sans {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.font_indie_flower {
+    font-family: 'Indie Flower', cursive;
+}
+
+@media (max-width: 800px) {
+    header {
+        flex-direction: column;
+        min-height: 100px;
+        align-content: none;
+    }
+
+    h1 {
+        flex-shrink: none;
+        padding: 0;
+        margin: 5px;
+    }
+
+    h2 {
+        flex: 1;
+        margin: 5px;
+    }
+
+    .main_content {
+        flex-direction: column;
+    }
+
+    .input_window {
+        border-right: none;
+    }
+
+    .word_counter {
+        border-bottom: 0.5px solid rgb(177, 177, 177);
+    }
 }
