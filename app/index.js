@@ -5,16 +5,16 @@ import 'styles/index.less';
 // START YOUR APP HERE
 // ================================
 
-// getText
-const textBox = document.getElementsByClassName('input_text')[0];
-const inputWindow = document.getElementsByClassName('input_window')[0];
-const wordCounter = document.getElementsByClassName('word_counter')[0];
-const showWindow = document.getElementsByClassName('show_window')[0];
-const descriptionLayer = document.getElementsByClassName('description_layer')[0];
-const fontSelect = document.getElementsByClassName('font-select')[0];
-const colorSelect = document.getElementsByClassName('color-select')[0];
-const controlButtons = document.getElementsByClassName('control_buttons');
-const colorStorage = {
+const $serviceName = document.getElementsByClassName('service_name')[0];
+const $inputWindow = document.getElementsByClassName('input_window')[0];
+const $textBox = document.getElementsByClassName('input_text')[0];
+const $wordCounter = document.getElementsByClassName('word_counter')[0];
+const $descriptionLayer = document.getElementsByClassName('description_layer')[0];
+const $showWindow = document.getElementsByClassName('show_window')[0];
+const $controlButtons = document.getElementsByClassName('control_buttons');
+const $fontSelect = document.getElementsByClassName('font-select')[0];
+const $colorSelect = document.getElementsByClassName('color-select')[0];
+const $colorStorage = {
   bright: [
     'rgba(78, 205, 196, 1)',
     'rgba(107, 255, 184, 1)',
@@ -44,68 +44,28 @@ const colorStorage = {
     'rgba(111, 255, 233, 1)',
   ],
 };
-let colorIndex = 0;
-const fontStorage = {
+const $fontStorage = {
   lobster: 'font_lobster',
   openSans: 'font_open_sans',
   indieFlower: 'font_indie_flower',
 };
-let saveMinedData = [];
-let dataIndex = 0;
-let selectedFont = '';
-let showType = 'List';
-let lastFunctionTime = 0;
+let $colorIndex = 0;
+let $selectedColor = 'bright';
+let $selectedFont = '';
+let $savedMinedData = [];
+let $dataIndex = 0;
+let $showType = 'List';
+let $lastFunctionTime = 0;
 
-textBox.addEventListener('input', getText);
-colorSelect.addEventListener('change', changeColor);
-fontSelect.addEventListener('change', changeFont);
-for (let i = 0; i < controlButtons.length; i++) {
-  controlButtons[i].addEventListener('click', changeShowType);
-}
+$serviceName.addEventListener('click', ev => window.location.reload());
+$textBox.addEventListener('input', getText);
+$colorSelect.addEventListener('change', changeColor);
+$fontSelect.addEventListener('change', changeFont);
+$showWindow.addEventListener('mousedown', addMousemoveEvent);
+$showWindow.addEventListener('mouseup', removeMousemoveEvent);
 
-showWindow.addEventListener('mousedown', (ev) => {
-  showWindow.addEventListener('mousemove', startDrawing);
-});
-
-showWindow.addEventListener('mouseup', (ev) => {
-  showWindow.removeEventListener('mousemove', startDrawing);
-});
-
-
-function startDrawing(ev) {
-  if (Date.now() - lastFunctionTime > 200) {
-    if (saveMinedData[dataIndex]) {
-      const colorPallet = colorStorage[colorSelect.value];
-      const highestValue = saveMinedData[0][1];
-      const div = document.createElement('div');
-
-      ev.currentTarget.appendChild(div);
-      div.style.top = ev.offsetY + 'px';
-      div.style.left = ev.offsetX + 'px';
-      div.style.color = colorPallet[colorIndex];
-      div.style.fontSize = `${saveMinedData[dataIndex][1] * 40 / highestValue + 10}px`;
-      div.textContent = saveMinedData[dataIndex][0];
-      div.classList.add('canvas');
-      dataIndex++;
-      colorIndex++;
-
-      if (colorIndex === 5) {
-        colorIndex = 0;
-      }
-    }
-
-    lastFunctionTime = Date.now();
-  }
-}
-
-function changeShowType(ev) {
-  if (ev.target.textContent === 'Canvas') {
-    showType = 'Canvas';
-    removeCloud();
-  } else {
-    showType = 'List';
-    showCloud(saveMinedData);
-  }
+for (let i = 0; i < $controlButtons.length; i++) {
+  $controlButtons[i].addEventListener('click', changeShowType);
 }
 
 function getText(ev) {
@@ -122,31 +82,30 @@ function getText(ev) {
   showTextLength(inputString.length);
 
   if (inputString.length <= 5000) {
-    if (inputWindow.classList.contains('overflow')) {
-      inputWindow.classList.remove('overflow');
+    if ($inputWindow.classList.contains('overflow')) {
+      $inputWindow.classList.remove('overflow');
     }
 
     analyzeText(inputString);
   } else {
-    inputWindow.classList.add('overflow');
+    $inputWindow.classList.add('overflow');
   }
 
-  if (!showWindow.innerHTML) {
-    descriptionLayer.classList.remove('hidden');
+  if (!$showWindow.innerHTML) {
+    $descriptionLayer.classList.remove('hidden');
   } else {
-    descriptionLayer.classList.add('hidden');
+    $descriptionLayer.classList.add('hidden');
   }
 
   function showTextLength(textLength) {
-    wordCounter.children[0].textContent = `type : ${textLength}`;
+    $wordCounter.children[0].textContent = `type : ${textLength}`;
   }
 }
 
-// analyzeText
 function analyzeText(inputString) {
   const notEnglishPattern = /[^a-zA-Z0-9\s']/g;
-  const beginWithCommaPattern = /^'/gm;
-  const endWithCommaPattern = /'\s/gm;
+  const beginWithCommaPattern = /^'|''+/gm;
+  const endWithCommaPattern = /'\s|'$/gm;
   const spacePattern = /[\r|\n|\s\s+]/g;
   let minedString = inputString.replace(notEnglishPattern, '');
 
@@ -156,7 +115,7 @@ function analyzeText(inputString) {
 
   const splitedString = minedString.split(' ');
   const wordDictionary = {};
-  let wordArray = [];
+  let wordAndCount = [];
 
   for (let i = 0; i < splitedString.length; i++) {
     if (wordDictionary[splitedString[i].toLowerCase()] === undefined) {
@@ -170,64 +129,115 @@ function analyzeText(inputString) {
 
   for (let key in wordDictionary) {
     if (wordDictionary.hasOwnProperty(key)) {
-      wordArray.push([key, wordDictionary[key]]);
+      wordAndCount.push([key, wordDictionary[key]]);
     }
   }
 
-  wordArray = wordArray.sort((a,b) => b[1] - a[1]);
-  saveMinedData = wordArray;
+  wordAndCount = wordAndCount.sort((a,b) => b[1] - a[1]);
+  $savedMinedData = wordAndCount;
 
-  if (showType === 'List') {
-    showCloud(wordArray);
+  if ($showType === 'List') {
+    makeListText(wordAndCount);
   }
 }
 
-// showCloud
-function showCloud(wordArray) {
+function makeListText(wordAndCount) {
   removeCloud();
 
-  if (wordArray[0] !== undefined) {
-    const highestValue = wordArray[0][1];
-    const colorPallet = colorStorage[colorSelect.value];
-    let j = 0;
+  if (wordAndCount[0] !== undefined) {
+    const highestValue = wordAndCount[0][1];
+    const colorPallet = $colorStorage[$selectedColor];
+    let colorIndex = 0;
 
-    if (selectedFont) {
-      showWindow.classList.remove(fontStorage[selectedFont]);
-    }
+    for (let i = 0; i < wordAndCount.length; i++) {
+      const cloudItem = document.createElement('div');
 
-    if (fontStorage[fontSelect.value]) {
-      showWindow.classList.add(fontStorage[fontSelect.value]);
-    }
+      cloudItem.textContent = wordAndCount[i][0];
+      cloudItem.style.fontSize = `${wordAndCount[i][1] * 40 / highestValue + 8}px`;
+      cloudItem.style.color = colorPallet[colorIndex];
+      cloudItem.classList.add('cloud_items');
+      $showWindow.appendChild(cloudItem);
+      colorIndex++;
 
-    for (let i = 0; i < wordArray.length; i++) {
-      const div = document.createElement('div');
-
-      div.style.fontSize = `${wordArray[i][1] * 40 / highestValue + 10}px`;
-      div.textContent = wordArray[i][0];
-      div.classList.add('cloud_items');
-      div.style.color = colorPallet[j];
-      showWindow.appendChild(div);
-      j++;
-
-      if (j === 5) {
-        j = 0;
+      if (colorIndex === 5) {
+        colorIndex = 0;
       }
     }
   }
 }
 
+function makeCanvasText(ev) {
+  if ($showType === 'Canvas') {
+    if (Date.now() - $lastFunctionTime > 100) {
+      if ($savedMinedData[$dataIndex]) {
+        const colorPallet = $colorStorage[$selectedColor];
+        const highestValue = $savedMinedData[0][1];
+        const cloudItem = document.createElement('div');
+
+        ev.currentTarget.appendChild(cloudItem);
+        cloudItem.textContent = $savedMinedData[$dataIndex][0];
+        cloudItem.style.fontSize = `${$savedMinedData[$dataIndex][1] * 40 / highestValue + 10}px`;
+        cloudItem.style.color = colorPallet[$colorIndex];
+        cloudItem.classList.add('canvas');
+        cloudItem.style.top = `${ev.offsetY - cloudItem.offsetHeight / 2}px`;
+        cloudItem.style.left = `${ev.offsetX - cloudItem.offsetWidth / 2}px`;
+        cloudItem.addEventListener('mousemove', ev => ev.stopPropagation());
+        $dataIndex++;
+        $colorIndex++;
+
+        if ($colorIndex === 5) {
+          $colorIndex = 0;
+        }
+      }
+
+      $lastFunctionTime = Date.now();
+    }
+  }
+}
+
+function changeShowType(ev) {
+  if (ev.target.textContent === 'Canvas') {
+    $showType = 'Canvas';
+    removeCloud();
+  } else {
+    $showType = 'List';
+    makeListText($savedMinedData);
+  }
+}
+
 function changeColor(ev) {
-  showCloud(saveMinedData);
+  $selectedColor = ev.currentTarget.value;
+  const colorPallet = $colorStorage[$selectedColor];
+  let colorIndex = 0;
+
+  for (let i = 0; i < $showWindow.children.length; i++) {
+    $showWindow.children[i].style.color = colorPallet[colorIndex];
+    colorIndex++;
+
+    if (colorIndex === 5) {
+      colorIndex = 0;
+    }
+  }
 }
 
 function changeFont(ev) {
-  showCloud(saveMinedData);
-  selectedFont = ev.currentTarget.value;
+  $showWindow.classList.remove($fontStorage[$selectedFont]);
+  $selectedFont = ev.currentTarget.value;
+  $showWindow.classList.add($fontStorage[$selectedFont]);
+}
+
+function addMousemoveEvent(ev) {
+  $showWindow.addEventListener('mousemove', makeCanvasText);
+}
+
+function removeMousemoveEvent(ev) {
+  $showWindow.removeEventListener('mousemove', makeCanvasText);
 }
 
 function removeCloud() {
-  for (let i = showWindow.children.length - 1; i > -1; i--) {
-    showWindow.children[i].remove();
+  for (let i = $showWindow.children.length - 1; i > -1; i--) {
+    $showWindow.children[i].remove();
   }
-  dataIndex = 0;
+
+  $dataIndex = 0;
 }
