@@ -276,12 +276,71 @@ function changeFont(ev) {
 }
 
 function showStatistic(ev) {
-  console.log(ev);
   if ($statisticValue !== ev.currentTarget.textContent
   || $statisticWindow.classList.contains('hidden')) {
     const chosenText = document.getElementsByClassName('chosen_text')[0];
-    const caclulatedData = calculateStatistic(ev.currentTarget.textContent);
+    const statisticContent = document.getElementsByClassName('statistic_content')[0];
+    const calculatedData = calculateStatistic(ev.currentTarget.textContent);
+    const statisticTable = document.createElement('div');
 
+    console.log(calculatedData);
+
+    if (statisticContent.children[1]) {
+      statisticContent.children[1].remove();
+    }
+
+    for (let i = 0; i < 8; i++) {
+      const tableRow = document.createElement('div');
+      tableRow.classList.add('table_row');
+
+      for (let j = 0; j < 3; j++) {
+        const tableData = document.createElement('span');
+        let beforeAfterText;
+
+        if (j === 0) {
+          if (i === 0) {
+            beforeAfterText = 'Before';
+          } else {
+            if (calculatedData[0][i - 1] !== undefined) {
+              beforeAfterText = calculatedData[0][i - 1][0];
+            } else {
+              beforeAfterText = '';
+            }
+          }
+        } else if (j === 1) {
+          if (i === 0) {
+            beforeAfterText = 'Rank';
+          } else {
+            if (calculatedData[0][i - 1] !== undefined || calculatedData[1][i - 1] !== undefined ) {
+              beforeAfterText = i;
+            } else {
+              beforeAfterText = '';
+            }
+          }
+        } else {
+          if (i === 0) {
+            beforeAfterText = 'After';
+          } else {
+            if (calculatedData[1][i - 1] !== undefined) {
+              beforeAfterText = calculatedData[1][i - 1][0];
+            } else {
+              beforeAfterText = '';
+            }
+          }
+        }
+
+        if (i === 0) {
+          tableData.style.fontWeight = 'bold';
+        }
+
+        tableData.textContent = beforeAfterText;
+        tableData.classList.add('table_data');
+        tableRow.appendChild(tableData);
+      }
+      statisticTable.appendChild(tableRow);
+    }
+    statisticTable.classList.add('statistic_table');
+    statisticContent.appendChild(statisticTable);
 
     chosenText.textContent = ev.currentTarget.textContent;
     chosenText.style.color = ev.currentTarget.style.color;
