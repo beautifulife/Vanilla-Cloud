@@ -132,22 +132,33 @@ h2 {
     font-size: 12px;
 }
 
+.control_window > .control_buttons {
+    flex: 0 0 70px;
+    margin-right: 15px;
+}
+
+.control_window > .control_buttons > button {
+    width: 70px;
+}
+
 .show_window {
     flex: 6;
     overflow:scroll;
-    color: rgba(0, 0, 0, 0.6)
+    color: rgba(0, 0, 0, 0.6);
+    padding: 5px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    position:relative;
+}
+
+.canvas {
+    position: absolute;
+    user-select: none;
 }
 
 .cloud_items {
     margin: 2px;
     padding: 2px;
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.cloud_items > span {
-    flex: 1;
 }
 
 .description_layer {
@@ -182,18 +193,6 @@ footer {
 
 .made_by {
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-}
-
-.color_baby {
-
-}
-
-.color_ranibow {
-
-}
-
-.color_dark {
-
 }
 
 .font_lobster {
