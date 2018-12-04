@@ -8,6 +8,7 @@ import 'styles/index.less';
 const $serviceName = document.getElementsByClassName('service_name')[0];
 const $inputWindow = document.getElementsByClassName('input_window')[0];
 const $textBox = document.getElementsByClassName('input_text')[0];
+const $statisticWindow = document.getElementsByClassName('statistic_window')[0];
 const $wordCounter = document.getElementsByClassName('word_counter')[0];
 const $descriptionLayer = document.getElementsByClassName('description_layer')[0];
 const $showWindow = document.getElementsByClassName('show_window')[0];
@@ -53,9 +54,11 @@ let $colorIndex = 0;
 let $selectedColor = 'bright';
 let $selectedFont = '';
 let $savedMinedData = [];
+let $saveBeforeAfterData;
 let $dataIndex = 0;
 let $showType = 'List';
 let $lastFunctionTime = 0;
+let $statisticValue = '';
 
 $serviceName.addEventListener('click', ev => window.location.reload());
 $textBox.addEventListener('input', getText);
@@ -91,11 +94,7 @@ function getText(ev) {
     $inputWindow.classList.add('overflow');
   }
 
-  if (!$showWindow.innerHTML) {
-    $descriptionLayer.classList.remove('hidden');
-  } else {
-    $descriptionLayer.classList.add('hidden');
-  }
+  checkDescriptionLayer();
 
   function showTextLength(textLength) {
     $wordCounter.children[0].textContent = `type : ${textLength}`;
@@ -103,7 +102,7 @@ function getText(ev) {
 }
 
 function analyzeText(inputString) {
-  const notEnglishPattern = /[^a-zA-Z0-9\s']/g;
+  const notEnglishPattern = /[^a-zA-Z\s']/g;
   const beginWithCommaPattern = /^'|''+/gm;
   const endWithCommaPattern = /'\s|'$/gm;
   const spacePattern = /[\r|\n|\s\s+]/g;
@@ -114,14 +113,49 @@ function analyzeText(inputString) {
   minedString = minedString.replace(spacePattern, ' ');
 
   const splitedString = minedString.split(' ');
+  const splitedLowerString = splitedString.map(string => string.toLowerCase());
   const wordDictionary = {};
   let wordAndCount = [];
 
   for (let i = 0; i < splitedString.length; i++) {
-    if (wordDictionary[splitedString[i].toLowerCase()] === undefined) {
-      wordDictionary[splitedString[i].toLowerCase()] = 1;
+    if (wordDictionary[splitedLowerString[i]] === undefined) {
+      const beforeString = {};
+      const afterString = {};
+
+      if (splitedLowerString[i - 1]) {
+        beforeString[splitedLowerString[i - 1]] = 1;
+      } else {
+        beforeString.Blank = 0;
+      }
+
+      if (splitedLowerString[i + 1]) {
+        afterString[splitedLowerString[i + 1]] = 1;
+      } else {
+        afterString.Blank = 0;
+      }
+
+      wordDictionary[splitedLowerString[i]] = {};
+      wordDictionary[splitedLowerString[i]].count = 1;
+      wordDictionary[splitedLowerString[i]].before = beforeString;
+      wordDictionary[splitedLowerString[i]].after = afterString;
     } else {
-      wordDictionary[splitedString[i].toLowerCase()]++;
+      const wordDictionaryIndexString = wordDictionary[splitedLowerString[i]];
+
+      wordDictionaryIndexString.count++;
+
+      if (wordDictionaryIndexString.before[splitedLowerString[i - 1]]) {
+        wordDictionaryIndexString.before[splitedLowerString[i - 1]]++;
+      } else {
+        wordDictionaryIndexString.before[splitedLowerString[i - 1]] = 1;
+      }
+
+      if (splitedString[i + 1]) {
+        if (wordDictionaryIndexString.after[splitedLowerString[i + 1]]) {
+          wordDictionaryIndexString.after[splitedLowerString[i + 1]]++;
+        } else {
+          wordDictionaryIndexString.after[splitedLowerString[i + 1]] = 1;
+        }
+      }
     }
   }
 
@@ -129,15 +163,18 @@ function analyzeText(inputString) {
 
   for (let key in wordDictionary) {
     if (wordDictionary.hasOwnProperty(key)) {
-      wordAndCount.push([key, wordDictionary[key]]);
+      wordAndCount.push([key, wordDictionary[key].count]);
     }
   }
 
   wordAndCount = wordAndCount.sort((a,b) => b[1] - a[1]);
   $savedMinedData = wordAndCount;
+  $saveBeforeAfterData = wordDictionary;
 
   if ($showType === 'List') {
     makeListText(wordAndCount);
+  } else {
+    removeCloud();
   }
 }
 
@@ -145,18 +182,19 @@ function makeListText(wordAndCount) {
   removeCloud();
 
   if (wordAndCount[0] !== undefined) {
-    const highestValue = wordAndCount[0][1];
+    const highestValue = Math.sqrt(wordAndCount[0][1]);
     const colorPallet = $colorStorage[$selectedColor];
     let colorIndex = 0;
 
     for (let i = 0; i < wordAndCount.length; i++) {
       const cloudItem = document.createElement('div');
 
+      $showWindow.appendChild(cloudItem);
       cloudItem.textContent = wordAndCount[i][0];
-      cloudItem.style.fontSize = `${wordAndCount[i][1] * 40 / highestValue + 8}px`;
+      cloudItem.style.fontSize = `${Math.sqrt(wordAndCount[i][1]) * 60 / highestValue}px`;
       cloudItem.style.color = colorPallet[colorIndex];
       cloudItem.classList.add('cloud_items');
-      $showWindow.appendChild(cloudItem);
+      cloudItem.addEventListener('click', showStatistic);
       colorIndex++;
 
       if (colorIndex === 5) {
@@ -171,17 +209,18 @@ function makeCanvasText(ev) {
     if (Date.now() - $lastFunctionTime > 100) {
       if ($savedMinedData[$dataIndex]) {
         const colorPallet = $colorStorage[$selectedColor];
-        const highestValue = $savedMinedData[0][1];
+        const highestValue = Math.sqrt($savedMinedData[0][1]);
         const cloudItem = document.createElement('div');
 
         ev.currentTarget.appendChild(cloudItem);
         cloudItem.textContent = $savedMinedData[$dataIndex][0];
-        cloudItem.style.fontSize = `${$savedMinedData[$dataIndex][1] * 40 / highestValue + 10}px`;
+        cloudItem.style.fontSize = `${Math.sqrt($savedMinedData[$dataIndex][1]) * 60 / highestValue}px`;
         cloudItem.style.color = colorPallet[$colorIndex];
         cloudItem.classList.add('canvas');
         cloudItem.style.top = `${ev.offsetY - cloudItem.offsetHeight / 2}px`;
         cloudItem.style.left = `${ev.offsetX - cloudItem.offsetWidth / 2}px`;
         cloudItem.addEventListener('mousemove', ev => ev.stopPropagation());
+        cloudItem.addEventListener('click', showStatistic);
         $dataIndex++;
         $colorIndex++;
 
@@ -195,6 +234,14 @@ function makeCanvasText(ev) {
   }
 }
 
+function checkDescriptionLayer() {
+  if (!$textBox.value) {
+    $descriptionLayer.classList.remove('hidden');
+  } else {
+    $descriptionLayer.classList.add('hidden');
+  }
+}
+
 function changeShowType(ev) {
   if (ev.target.textContent === 'Canvas') {
     $showType = 'Canvas';
@@ -203,6 +250,8 @@ function changeShowType(ev) {
     $showType = 'List';
     makeListText($savedMinedData);
   }
+
+  checkDescriptionLayer();
 }
 
 function changeColor(ev) {
@@ -224,6 +273,51 @@ function changeFont(ev) {
   $showWindow.classList.remove($fontStorage[$selectedFont]);
   $selectedFont = ev.currentTarget.value;
   $showWindow.classList.add($fontStorage[$selectedFont]);
+}
+
+function showStatistic(ev) {
+  console.log(ev);
+  if ($statisticValue !== ev.currentTarget.textContent
+  || $statisticWindow.classList.contains('hidden')) {
+    const chosenText = document.getElementsByClassName('chosen_text')[0];
+    const caclulatedData = calculateStatistic(ev.currentTarget.textContent);
+
+
+    chosenText.textContent = ev.currentTarget.textContent;
+    chosenText.style.color = ev.currentTarget.style.color;
+    $statisticWindow.classList.remove('hidden');
+    setTimeout(() => $statisticWindow.style.left = '0', 0);
+    $statisticValue = ev.currentTarget.textContent;
+  } else {
+    $statisticWindow.style.left = '';
+    setTimeout(() => $statisticWindow.classList.add('hidden'), 1000);
+  }
+}
+
+function calculateStatistic(currentTextData) {
+  const beforeAfterData = $saveBeforeAfterData[currentTextData];
+  let beforeData = [];
+  let afterData = [];
+
+  delete beforeAfterData.before[''];
+  delete beforeAfterData.after[''];
+
+  for (let key in beforeAfterData.before) {
+    if (beforeAfterData.before.hasOwnProperty(key)) {
+    beforeData.push([key, beforeAfterData.before[key]]);
+    }
+  }
+
+  for (let key in beforeAfterData.after) {
+    if (beforeAfterData.after.hasOwnProperty(key)) {
+      afterData.push([key, beforeAfterData.after[key]]);
+    }
+  }
+
+  beforeData = beforeData.sort((a,b) => b[1] - a[1]);
+  afterData = afterData.sort((a,b) => b[1] - a[1]);
+
+  return [beforeData, afterData];
 }
 
 function addMousemoveEvent(ev) {
