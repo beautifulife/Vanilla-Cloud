@@ -17,43 +17,43 @@ textarea {
 
 .content {
     display: flex;
+    flex-direction: column;
     position: absolute;
     top: 0;
     left: 0;
-    height: 100%;
     width: 100%;
-    flex-direction: column;
     min-width: 500px;
+    height: 100%;
 }
 
 header {
     flex: 1;
-    align-items: center;
     display: flex;
+    align-items: center;
     min-height: 70px;
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     border-bottom: 0.5px solid rgb(177, 177, 177);
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     letter-spacing: 0.5px;
     word-spacing: 3px;
 }
 
 h1 {
-    padding-left: 40px;
     flex: 1;
     display: flex;
     align-content: center;
+    padding-left: 40px;
 }
 
 h1 > .header_img_left {
-    margin-right: 5px;
     width: 40px;
     height: 35px;
+    margin-right: 5px;
 }
 
 h1 > .header_img_right {
-    margin-left: 10px;
     width: 40px;
     height: 40px;
+    margin-left: 10px;
 }
 
 .service_name {
@@ -67,9 +67,9 @@ h2 {
 
 .main_content {
     flex: 14;
-    min-height: 500px;
     flex-shrink: 0;
     display: flex;
+    min-height: 500px;
     color: rgba(0, 0, 0, 0.6);
 }
 
@@ -88,18 +88,18 @@ h2 {
 
 .input_text {
     flex: 8;
+    resize:none;
+    word-wrap: break-word;
     padding: 15px;
     padding-bottom: 0;
-    word-wrap: break-word;
-    resize:none;
 }
 
 .word_counter {
     flex: 1;
     flex-basis: 15px;
-    text-align: center;
     display: flex;
     align-items: center;
+    text-align: center;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
@@ -108,48 +108,48 @@ h2 {
 }
 
 .statistic_window {
+    display: flex;
+    flex-direction: column;
+    overflow:scroll;
     position: absolute;
     left: -100%;
     width: calc(100% - 72%);
     min-width: 260px;
     height: calc(100% - 18%);
     min-height: 500px;
-    background-color: white;
-    display: flex;
-    flex-direction: column;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     font-size: 20px;
-    overflow:scroll;
+    background-color: white;
     transition: left 0.8s ease-out;
 }
 
 .statistic_header {
     flex: 1 0 150px;
-    padding: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
     position: relative;
+    padding: 10px;
 }
 
 .statistic_header > .chosen_text {
     flex: 2;
-    font-size: 40px;
     display: flex;
-    width: 100%;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     overflow: scroll;
+    width: 100%;
+    font-size: 40px;
 }
 
 .statistic_content {
     flex: 3 0 370px;
-    padding: 10px;
     display: flex;
     flex-direction: column;
-    text-align: center;
     align-items: stretch;
     justify-content: center;
+    text-align: center;
+    padding: 10px;
 }
 
 .statistic_subject {
@@ -157,11 +157,11 @@ h2 {
 }
 
 .statistic_table {
-    font-family: sans-serif, Arial;
-    font-size: 12px;
     flex: 6;
     display: flex;
     flex-direction: column;
+    font-size: 12px;
+    font-family: sans-serif, Arial, monospace;
 }
 
 .table_row {
@@ -171,7 +171,6 @@ h2 {
 
 .table_data {
     flex: 1;
-    // border: 0.5px solid lightgray;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -181,8 +180,8 @@ h2 {
     flex: 3 1 100px;
     display: flex;
     flex-direction: column;
-    position: relative;
     overflow: auto;
+    position: relative;
 }
 
 ::-webkit-scrollbar {
@@ -195,8 +194,8 @@ h2 {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: rgba(207, 206, 206, 0.733);
     border-radius: 5px;
+    background-color: rgba(207, 206, 206, 0.733);
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
 }
 
@@ -206,10 +205,10 @@ h2 {
 
 .control_window {
     flex: 0 0 50px;
-    border-bottom: 0.5px solid rgb(177, 177, 177);
     display: flex;
     align-items: center;
     justify-content: center;
+    border-bottom: 0.5px solid rgb(177, 177, 177);
 }
 
 .control_window > div {
@@ -231,24 +230,24 @@ h2 {
 
 .show_window {
     flex: 6;
-    color: rgba(0, 0, 0, 0.6);
+    position:relative;
     padding: 5px 10px;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    position:relative;
+    color: rgba(0, 0, 0, 0.6);
 }
 
 .cloud_items {
+    display: inline-flex;
     margin: 2px;
     padding: 2px;
-    display: inline-flex;
     cursor: pointer;
 }
 
 .canvas {
     display: block;
     position: absolute;
-    user-select: none;
     padding: 10px 20px;
+    user-select: none;
     cursor: pointer;
 }
 
@@ -258,9 +257,9 @@ h2 {
     left: calc(50% - 205px);
     width: 410px;
     height: 126px;
-    background-color: rgba(226, 224, 224, 0.5);
-    border-radius: 10px;
     padding: 0 13px;
+    border-radius: 10px;
+    background-color: rgba(226, 224, 224, 0.5);
     color:rgba(0, 0, 0, 0.4);
 }
 
@@ -273,12 +272,12 @@ h2 {
 }
 
 footer {
-    margin-top: auto;
     flex: 1;
-    min-height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 30px;
+    margin-top: auto;
     border-top: 0.5px solid rgb(177, 177, 177);
 }
 
@@ -301,14 +300,14 @@ footer {
 @media (max-width: 850px) {
     header {
         flex-direction: column;
-        min-height: 100px;
         align-content: none;
+        min-height: 100px;
     }
 
     h1 {
         flex-shrink: none;
-        padding: 0;
         margin: 5px;
+        padding: 0;
     }
 
     h2 {
@@ -329,11 +328,11 @@ footer {
     }
 
     .statistic_window {
+        flex-direction: row;
         width: 100%;
         min-width: 260px;
         height: calc(100% - 73%);
         min-height: 170px;
-        flex-direction: row;
     }
 
     .statistic_header, .statistic_content {

@@ -54,11 +54,11 @@ let $colorIndex = 0;
 let $selectedColor = 'bright';
 let $selectedFont = '';
 let $savedMinedData = [];
-let $saveBeforeAfterData;
+let $savedBeforeAfterData;
 let $dataIndex = 0;
 let $showType = 'List';
 let $lastFunctionTime = 0;
-let $statisticValue = '';
+let $beforeStatisticTarget = '';
 
 $serviceName.addEventListener('click', ev => window.location.reload());
 $textBox.addEventListener('input', getText);
@@ -82,7 +82,7 @@ function getText(ev) {
 
   const inputString = ev.currentTarget.value;
 
-  showTextLength(inputString.length);
+  $wordCounter.children[0].textContent = `type : ${inputString.length}`;
 
   if (inputString.length <= 5000) {
     if ($inputWindow.classList.contains('overflow')) {
@@ -95,10 +95,6 @@ function getText(ev) {
   }
 
   checkDescriptionLayer();
-
-  function showTextLength(textLength) {
-    $wordCounter.children[0].textContent = `type : ${textLength}`;
-  }
 }
 
 function analyzeText(inputString) {
@@ -124,14 +120,10 @@ function analyzeText(inputString) {
 
       if (splitedLowerString[i - 1]) {
         beforeString[splitedLowerString[i - 1]] = 1;
-      } else {
-        beforeString.Blank = 0;
       }
 
       if (splitedLowerString[i + 1]) {
         afterString[splitedLowerString[i + 1]] = 1;
-      } else {
-        afterString.Blank = 0;
       }
 
       wordDictionary[splitedLowerString[i]] = {};
@@ -139,21 +131,21 @@ function analyzeText(inputString) {
       wordDictionary[splitedLowerString[i]].before = beforeString;
       wordDictionary[splitedLowerString[i]].after = afterString;
     } else {
-      const wordDictionaryIndexString = wordDictionary[splitedLowerString[i]];
+      const wordDictionaryIndexObject = wordDictionary[splitedLowerString[i]];
 
-      wordDictionaryIndexString.count++;
+      wordDictionaryIndexObject.count++;
 
-      if (wordDictionaryIndexString.before[splitedLowerString[i - 1]]) {
-        wordDictionaryIndexString.before[splitedLowerString[i - 1]]++;
+      if (wordDictionaryIndexObject.before[splitedLowerString[i - 1]]) {
+        wordDictionaryIndexObject.before[splitedLowerString[i - 1]]++;
       } else {
-        wordDictionaryIndexString.before[splitedLowerString[i - 1]] = 1;
+        wordDictionaryIndexObject.before[splitedLowerString[i - 1]] = 1;
       }
 
       if (splitedString[i + 1]) {
-        if (wordDictionaryIndexString.after[splitedLowerString[i + 1]]) {
-          wordDictionaryIndexString.after[splitedLowerString[i + 1]]++;
+        if (wordDictionaryIndexObject.after[splitedLowerString[i + 1]]) {
+          wordDictionaryIndexObject.after[splitedLowerString[i + 1]]++;
         } else {
-          wordDictionaryIndexString.after[splitedLowerString[i + 1]] = 1;
+          wordDictionaryIndexObject.after[splitedLowerString[i + 1]] = 1;
         }
       }
     }
@@ -169,7 +161,7 @@ function analyzeText(inputString) {
 
   wordAndCount = wordAndCount.sort((a,b) => b[1] - a[1]);
   $savedMinedData = wordAndCount;
-  $saveBeforeAfterData = wordDictionary;
+  $savedBeforeAfterData = wordDictionary;
 
   if ($showType === 'List') {
     makeListText(wordAndCount);
@@ -256,6 +248,7 @@ function changeShowType(ev) {
 
 function changeColor(ev) {
   $selectedColor = ev.currentTarget.value;
+
   const colorPallet = $colorStorage[$selectedColor];
   let colorIndex = 0;
 
@@ -276,26 +269,31 @@ function changeFont(ev) {
 }
 
 function showStatistic(ev) {
-  if ($statisticValue !== ev.currentTarget.textContent
-  || $statisticWindow.classList.contains('hidden')) {
+  if ($beforeStatisticTarget !== ev.currentTarget.textContent || $statisticWindow.classList.contains('hidden')) {
     const chosenText = document.getElementsByClassName('chosen_text')[0];
     const statisticContent = document.getElementsByClassName('statistic_content')[0];
     const calculatedData = calculateStatistic(ev.currentTarget.textContent);
     const statisticTable = document.createElement('div');
 
-    console.log(calculatedData);
-
     if (statisticContent.children[1]) {
       statisticContent.children[1].remove();
     }
 
+    statisticContent.appendChild(statisticTable);
+    statisticTable.classList.add('statistic_table');
+
     for (let i = 0; i < 8; i++) {
       const tableRow = document.createElement('div');
+
+      statisticTable.appendChild(tableRow);
       tableRow.classList.add('table_row');
 
       for (let j = 0; j < 3; j++) {
         const tableData = document.createElement('span');
         let beforeAfterText;
+
+        tableRow.appendChild(tableData);
+        tableData.classList.add('table_data');
 
         if (j === 0) {
           if (i === 0) {
@@ -311,7 +309,7 @@ function showStatistic(ev) {
           if (i === 0) {
             beforeAfterText = 'Rank';
           } else {
-            if (calculatedData[0][i - 1] !== undefined || calculatedData[1][i - 1] !== undefined ) {
+            if (calculatedData[0][i - 1] !== undefined || calculatedData[1][i - 1] !== undefined) {
               beforeAfterText = i;
             } else {
               beforeAfterText = '';
@@ -334,19 +332,27 @@ function showStatistic(ev) {
         }
 
         tableData.textContent = beforeAfterText;
-        tableData.classList.add('table_data');
-        tableRow.appendChild(tableData);
       }
-      statisticTable.appendChild(tableRow);
     }
-    statisticTable.classList.add('statistic_table');
-    statisticContent.appendChild(statisticTable);
 
     chosenText.textContent = ev.currentTarget.textContent;
     chosenText.style.color = ev.currentTarget.style.color;
+
+    if (chosenText.classList[1] !== ev.currentTarget.parentNode.classList[1]) {
+      if (ev.currentTarget.parentNode.classList[1] !== undefined) {
+        if (chosenText.classList[1] !== undefined) {
+          chosenText.classList.remove(chosenText.classList[1]);
+        }
+
+        chosenText.classList.add(ev.currentTarget.parentNode.classList[1]);
+      } else {
+        chosenText.classList.remove(chosenText.classList[1]);
+      }
+    }
+
     $statisticWindow.classList.remove('hidden');
     setTimeout(() => $statisticWindow.style.left = '0', 0);
-    $statisticValue = ev.currentTarget.textContent;
+    $beforeStatisticTarget = ev.currentTarget.textContent;
   } else {
     $statisticWindow.style.left = '';
     setTimeout(() => $statisticWindow.classList.add('hidden'), 1000);
@@ -354,7 +360,7 @@ function showStatistic(ev) {
 }
 
 function calculateStatistic(currentTextData) {
-  const beforeAfterData = $saveBeforeAfterData[currentTextData];
+  const beforeAfterData = $savedBeforeAfterData[currentTextData];
   let beforeData = [];
   let afterData = [];
 
